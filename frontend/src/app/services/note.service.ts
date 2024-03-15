@@ -47,6 +47,7 @@ export class NoteService {
 
   async createNote(note: Note): Promise<void> {
     try {
+      console.log(note);
       await fetch(`${this.notesUrl}`, {
         method: 'POST',
         body: JSON.stringify(note),

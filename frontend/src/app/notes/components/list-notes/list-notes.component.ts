@@ -26,7 +26,6 @@ export class ListNotesComponent {
 
     this.loginService.authState$?.subscribe((user) => {
       if (user) {
-        
         this.userId = user.id;
         this.noteService.getActiveNotes(user.id).then(notes => {
           if (notes) {
@@ -85,14 +84,29 @@ export class ListNotesComponent {
   }
 
   applyOrderDirectionFilter() {
-    if (this.orderDirection === 'asc') {
+    if(this.order === 'title' && this.orderDirection === 'asc') {
+      this.filteredNotes = this.filteredNotes?.sort((a, b) => {
+        if (a.title && b.title) {
+          return a.title.localeCompare(b.title);
+        }
+        return 0;
+      });
+    } else if (this.order === 'title' && this.orderDirection === 'desc') {
+      this.filteredNotes = this.filteredNotes?.sort((a, b) => {
+        if (a.title && b.title) {
+          return b.title.localeCompare(a.title);
+        }
+        return 0;
+      });
+    }
+    else if (this.orderDirection === 'asc' ) {
       this.filteredNotes = this.filteredNotes?.sort((a, b) => {
         if (a.createdAt && b.createdAt) {
           return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
         }
         return 0;
       });
-    } else if (this.orderDirection === 'desc') {
+    } else  {
       this.filteredNotes = this.filteredNotes?.sort((a, b) => {
         if (a.createdAt && b.createdAt) {
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();

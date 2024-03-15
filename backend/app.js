@@ -2,7 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const path = require('path');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3040;
 // const port = 3040;
 const cors = require('cors');
 
@@ -19,11 +19,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Servir archivos estáticos desde la carpeta 'dist', en la raíz del sitio
-app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
+// app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
 
 app.use(cors({
   // origin: '*',
-  origin: 'https://app-notes-challenge-production.up.railway.app',
+  origin: 'http://localhost:4200',
+  // origin: 'https://app-notes-challenge-production.up.railway.app',
   credentials: true
 }));
 

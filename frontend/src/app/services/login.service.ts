@@ -32,16 +32,24 @@ export class LoginService {
         correo: email,
         contraseñaHash: password
       }
-      const user = await axios.post(`${this.userUrl}/auth`, userCredential, { withCredentials: true });
-      localStorage.setItem('user', JSON.stringify(user.data));
-      if (user) {
-        this.authState$?.next(user.data);
-        return user.data;
-      } else {
-        alert('No se pudo iniciar sesión');
+      const user = await axios.post(`${this.userUrl}/auth`, userCredential);
+      // localStorage.setItem('user', JSON.stringify(user.data));
+      console.log(user.data);
+      
+      // quiero preguntar en el if si el json que volvio tiene un campo error
+      if (user.data.error) {
+        alert('No se pudo iniciar sesión no existe el usuario o la contraseña es incorrecta');
+        this.authState$?.next(null);
         window.location.href = '/login';
+        
         return null;
       }
+      else {
+        this.cookieS.set('user', JSON.stringify(user.data));
+        this.authState$?.next(user.data);
+        window.location.href = '/notes-list';
+        return user.data;
+      } 
     } catch (e) {
       console.log(e);
       throw e;
@@ -72,7 +80,8 @@ export class LoginService {
   }
 
   async logout() {
-    localStorage.removeItem('user');
+    // localStorage.removeItem('user');
+    this.cookieS.delete('user');
     this.authState$?.next(null);
     window.location.href = '/notes-list';
     alert('Sesión cerrada con éxito');
@@ -99,7 +108,8 @@ export class LoginService {
   }
 
   async isUserLoggedIn(): Promise<User | null> {
-    const user = localStorage.getItem('user');
+    // const user = localStorage.getItem('user');
+    const user = this.cookieS.get('user');
     if (user) {
       return JSON.parse(user);
     } else {

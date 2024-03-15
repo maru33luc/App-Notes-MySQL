@@ -2,6 +2,7 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CategoryService } from '../../../services/category.service';
 import { Note } from '../../../interfaces/Note';
+import { LoginService } from '../../../services/login.service';
 
 @Component({
   selector: 'app-form-notes',
@@ -18,7 +19,8 @@ export class FormNotesComponent {
   @Output() sendNote = new EventEmitter<Note>()
 
   constructor(private formBuilder: FormBuilder,
-    private categoryService: CategoryService) {}
+    private categoryService: CategoryService, 
+    private loginService: LoginService ) {}
 
   newNoteForm: FormGroup = this.formBuilder.group({
     title: ['', [Validators.required, Validators.maxLength(50)]],
@@ -44,11 +46,13 @@ export class FormNotesComponent {
     if(this.newNoteForm.invalid) {
       this.newNoteForm.markAllAsTouched();
     } else {
+      const user = this.loginService.authState$?.getValue();
+      if (!user || user ==undefined) return;
       const note: Note = {
         title: this.newNoteForm.value.title,
         content: this.newNoteForm.value.content,
         categoriaId: this.newNoteForm.value.categoriaId,
-        usuarioId: 1,
+        usuarioId: user.id,
       }
       this.sendNote.emit(note);
     }

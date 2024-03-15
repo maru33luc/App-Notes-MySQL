@@ -23,7 +23,7 @@ const Category = db.define('categorias', {
         type: DataTypes.DATE,
         allowNull: false
     }
-    }, { imestamps: true,
-        schema: 'public' });
+    }, { timestamps: true
+         });
 
 module.exports = Category;

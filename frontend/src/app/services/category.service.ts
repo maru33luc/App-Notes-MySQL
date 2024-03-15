@@ -99,6 +99,11 @@ export class CategoryService {
         body: JSON.stringify(category)
       });
       const data = await res.json();
+      if(data.id){
+        const categories = await this.getCategories();
+        this.categories$?.next(categories);
+        return data;
+      }
       return data;
     }catch(err){
       console.log(err);
